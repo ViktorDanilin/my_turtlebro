@@ -1,6 +1,6 @@
 # Robot keyboard control
 ## запуск
-* $ python ваш путь до файла/teleop.py
+* $ python teleop_лунищфкв.py
 ## управление
 * W,A,S,D - перемещение робота, публикация в топик /cmd_vel
 * Z,X - перемещение слайдера, публикация в топик /arduino/slider 1/0
