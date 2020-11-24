@@ -11,7 +11,7 @@ while True:
     joystick.init()
 
     axes = joystick.get_numaxes()
-    axis = joystick.get_axis(4)
+    axis = joystick.get_axis(0)
     buttons = joystick.get_numbuttons()
     button = joystick.get_button(1)
     hats = joystick.get_numhats()
