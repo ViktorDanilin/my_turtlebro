@@ -56,12 +56,12 @@ def start():
     while True:
         if (angle[0]==angle[1])or(angle[2]==angle[3])or(angle[4]==angle[5]):
             break
-        print(angle[0],angle[1])
+        #print(angle[0],angle[1])
         # p = 6
         pub_vel.angular.z = 0.1
         # * (l-angle) * p
         pub.publish(pub_vel)
-    print(angle)
+    #print(angle)
     pub_vel.angular.z = 0
     pub.publish(pub_vel)
 while not rospy.is_shutdown():
