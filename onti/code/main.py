@@ -30,23 +30,25 @@ sub_1 = rospy.Subscriber('/ultrasound', Range, range_cb)
 sub_2 = rospy.Subscriber('/pushed', Bool, start_cb)
 def start():
     global dist, button, x, z
-    if button:
-        time.sleep(7)
-        if dist>50 or dist==0:
-            x = 0.5
-            z = 0
-            move(x,z)
-            time.sleep(2)
-            x = 0
-            z = 0
-            move(x, z)
-def main(c):
-    global dist, button,x,z
-    if c == 1:
-        start()
-        c += 1
+    while(True):
+        if button:
+            time.sleep(7)
+            if dist>50 or dist==0:
+                x = 0.5
+                z = 0
+                move(x,z)
+                time.sleep(2)
+                x = 0
+                z = 0
+                move(x, z)
+                break
+def main():
     print(dist, button)
 
 while not rospy.is_shutdown():
-    main(c)
+    if c == 1:
+        start()
+        c += 1
+    else:
+        main()
     rospy.sleep(0.1)
