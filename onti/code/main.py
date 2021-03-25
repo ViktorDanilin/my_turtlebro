@@ -40,7 +40,7 @@ def main():
                 x = 0.5
                 z = 0
                 move(x,z)
-                time.sleep(4)
+                time.sleep(2)
         x = 0
         z = 0
         move(x,z)
