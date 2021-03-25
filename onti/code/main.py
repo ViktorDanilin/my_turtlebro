@@ -27,28 +27,35 @@ button = False
 
 def turn_around():
     global odom_xyt, odom_0_xyt, x_pose,y_pose, angular
+    c = 0
     if x_pose>0 and y_pose>0:
         #1chetvert
+        c = 1
         x_pose = abs(x_pose)
         y_pose = abs(y_pose)
         angular = -1*(pi-atan((x_pose/y_pose)))
     if x_pose < 0 and y_pose > 0:
         #2chetvert
+        c = 2
         x_pose = abs(x_pose)
         y_pose = abs(y_pose)
         angular = (pi - atan((x_pose / y_pose)))
     if x_pose < 0 and y_pose < 0:
         #3chetvert
+        c = 3
         x_pose = abs(x_pose)
         y_pose = abs(y_pose)
         angular = (pi + atan((x_pose / y_pose)))
     if x_pose > 0 and y_pose < 0:
         #4chetvert
+        c = 4
         x_pose = abs(x_pose)
         y_pose = abs(y_pose)
         angular = -1 * (pi + atan((x_pose / y_pose)))
+    print(c, angular)
     while(True):
-        if angular>=0 and angular<=odom_0_xyt[2]:
+        print(odom_xyt, angular)
+        if angular>=0 and angular<=odom_xyt[2]:
             if odom_xyt[2]<=angular:
                 x = 0
                 z = -0.1
@@ -72,7 +79,9 @@ def turn_around():
 def turn_forward():
     global odom_xyt, odom_0_xyt, x_pose,y_pose, angular
     l = math.sqrt(pow(x_pose,2)+pow(y_pose,2))
+    print(l)
     while(True):
+        print(odom_0_xyt[0],l)
         if odom_xyt[0]<=l:
             x = 0.2
             z = 0
@@ -136,3 +145,10 @@ while not rospy.is_shutdown():
     else:
         main()
     rospy.sleep(0.1)
+
+
+# x-0.1
+# y0.4
+# (2, 2.896613990462929)
+# 0.412310562562
+# (1, -2.896613990462929)
