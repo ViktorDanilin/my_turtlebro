@@ -29,7 +29,7 @@ def turn_around():
             angular = 0
         if y_pose<0:
             c = 3
-            angular = pi-0.2
+            angular = pi-0.01
     elif y_pose == 0:
         if x_pose>0:
             c = 1
@@ -99,7 +99,7 @@ def turn_forward():
     r = math.sqrt(pow(odom_xyt[0],2)+pow(odom_xyt[1],2))
     l = math.sqrt(pow(x_pose,2)+pow(y_pose,2))
     while(True):
-        print(round(odom_xyt[0],3),l)
+        #print(round(odom_xyt[0],3),l)
         if abs(odom_xyt[0])<=abs(l):
             x = 0.2
             z = 0
