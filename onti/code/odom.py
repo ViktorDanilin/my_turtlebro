@@ -46,25 +46,25 @@ def turn_around():
             c = 1
             x_pose = abs(x_pose)
             y_pose = abs(y_pose)
-            angular = -1*((pi/2)-atan((x_pose/y_pose)))
+            angular = -1*((pi/2)-atan((y_pose/x_pose)))
         if x_pose < 0 and y_pose > 0:
             #2chetvert
             c = 2
             x_pose = abs(x_pose)
             y_pose = abs(y_pose)
-            angular = ((pi/2) - atan((x_pose / y_pose)))
+            angular = ((pi/2) - atan((y_pose / x_pose)))
         if x_pose < 0 and y_pose < 0:
             #3chetvert
             c = 3
             x_pose = abs(x_pose)
             y_pose = abs(y_pose)
-            angular = ((pi/2) + atan((x_pose / y_pose)))
+            angular = ((pi/2) + atan((y_pose / x_pose)))
         if x_pose > 0 and y_pose < 0:
             #4chetvert
             c = 4
             x_pose = abs(x_pose)
             y_pose = abs(y_pose)
-            angular = -1 * ((pi/2) + atan((x_pose / y_pose)))
+            angular = -1 * ((pi/2) + atan((y_pose / x_pose)))
 
     while(True):
         #print(odom_xyt[2], angular)
