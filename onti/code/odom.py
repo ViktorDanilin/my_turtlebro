@@ -133,7 +133,7 @@ sub = rospy.Subscriber('/odom', Odometry, odom_cb)
 
 def main():
     global odom_xyt, odom_0_xyt
-    turn_around()
+
     # turn_forward()
 
 while not rospy.is_shutdown():

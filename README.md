@@ -11,7 +11,7 @@
 * robot: export ROS_MASTER_URI='http://192.168.19.192:11311/'
 * robot: export ROS_HOSTNAME=192.168.19.192
 * ip ntk_9a_55 192.168.0.102
-
+* rosrun rosserial_arduino serial_node.py _port:=/dev/ttyUSB0
 # slam-navigation launch
 * launch on raspberripi
   * export ROVER_MODEL=turtlebro
