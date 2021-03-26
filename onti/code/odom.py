@@ -49,7 +49,7 @@ def turn_around():
         angular = -1 * ((pi/2) + atan((x_pose / y_pose)))
 
     while(True):
-        print(c, odom_xyt[2], angular)
+        #print(c, odom_xyt[2], angular)
         if c==1 or c==4:
             if odom_xyt[2]>angular:
                 x = 0
@@ -78,7 +78,7 @@ def turn_forward():
     r = math.sqrt(pow(odom_xyt[0],2)+pow(odom_xyt[1],2))
     l = math.sqrt(pow(x_pose,2)+pow(y_pose,2))
     while(True):
-        print(odom_xyt[0],l)
+        #print(odom_xyt[0],l)
         if abs(odom_xyt[0])<=abs(l):
             x = 0.2
             z = 0
