@@ -70,6 +70,9 @@ def turn_around():
             x_pose = abs(x_pose)
             y_pose = abs(y_pose)
             angular = -1 * ((pi/2) + atan((y_pose / x_pose)))
+    angular+=odom_xyt[2]
+    if abs(angular)>pi:
+        angular = pi
     print(odom_xyt[2],angular)
 
     while(True):
@@ -103,7 +106,7 @@ def turn_around():
 def turn_forward():
     global odom_xyt, odom_0_xyt, x_pose,y_pose, angular
     r = math.sqrt(pow(odom_xyt[0],2)+pow(odom_xyt[1],2))
-    l = math.sqrt(pow(x_pose,2)+pow(y_pose,2))+odom_xyt[0]
+    l = abs(math.sqrt(pow(x_pose,2)+pow(y_pose,2))+abs(odom_xyt[0]))
     print(odom_xyt[0],l)
     while(True):
         #print(round(odom_xyt[0],3),l)
@@ -155,6 +158,7 @@ def start():
                 x = 0.3
                 z = 0
                 move(x,z)
+                time.sleep(2)
                 x = 0
                 z = 0
                 move(x, z)
