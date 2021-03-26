@@ -23,35 +23,53 @@ z = 0
 def turn_around():
     global odom_xyt, odom_0_xyt, x_pose,y_pose, angular
     c = 0
-    if x_pose>0 and y_pose>0:
-        #1chetvert
-        c = 1
-        x_pose = abs(x_pose)
-        y_pose = abs(y_pose)
-        angular = -1*((pi/2)-atan((x_pose/y_pose)))
-    if x_pose < 0 and y_pose > 0:
-        #2chetvert
-        c = 2
-        x_pose = abs(x_pose)
-        y_pose = abs(y_pose)
-        angular = ((pi/2) - atan((x_pose / y_pose)))
-    if x_pose < 0 and y_pose < 0:
-        #3chetvert
-        c = 3
-        x_pose = abs(x_pose)
-        y_pose = abs(y_pose)
-        angular = ((pi/2) + atan((x_pose / y_pose)))
-    if x_pose > 0 and y_pose < 0:
-        #4chetvert
-        c = 4
-        x_pose = abs(x_pose)
-        y_pose = abs(y_pose)
-        angular = -1 * ((pi/2) + atan((x_pose / y_pose)))
+    if x_pose == 0:
+        if y_pose>=0:
+            c = 1
+            angular = 0
+        if y_pose<0:
+            c = 3
+            angular = pi-0.2
+    elif y_pose == 0:
+        if x_pose>0:
+            c = 1
+            angular = -1*(pi/2)
+        if x_pose<0:
+            c = 2
+            angular = (pi/2)
+        if x_pose==0:
+            c = 1
+            angular = 0
+    else:
+        if x_pose>0 and y_pose>0:
+            #1chetvert
+            c = 1
+            x_pose = abs(x_pose)
+            y_pose = abs(y_pose)
+            angular = -1*((pi/2)-atan((x_pose/y_pose)))
+        if x_pose < 0 and y_pose > 0:
+            #2chetvert
+            c = 2
+            x_pose = abs(x_pose)
+            y_pose = abs(y_pose)
+            angular = ((pi/2) - atan((x_pose / y_pose)))
+        if x_pose < 0 and y_pose < 0:
+            #3chetvert
+            c = 3
+            x_pose = abs(x_pose)
+            y_pose = abs(y_pose)
+            angular = ((pi/2) + atan((x_pose / y_pose)))
+        if x_pose > 0 and y_pose < 0:
+            #4chetvert
+            c = 4
+            x_pose = abs(x_pose)
+            y_pose = abs(y_pose)
+            angular = -1 * ((pi/2) + atan((x_pose / y_pose)))
 
     while(True):
-        #print(c, odom_xyt[2], angular)
+        #print(odom_xyt[2], angular)
         if c==1 or c==4:
-            if odom_xyt[2]>angular:
+            if odom_xyt[2]>=angular:
                 x = 0
                 z = -0.15
                 move(x, z)
@@ -60,9 +78,11 @@ def turn_around():
                 x = 0
                 z = 0
                 move(x,z)
+                rospy.sleep(0.1)
+                print("vse")
                 break
         if c==2 or c==3:
-            if odom_xyt[2]<angular:
+            if odom_xyt[2]<=angular:
                 x = 0
                 z = 0.15
                 move(x, z)
@@ -70,6 +90,7 @@ def turn_around():
                 x = 0
                 z = 0
                 move(x, z)
+                rospy.sleep(0.1)
                 print("vse")
                 break
 
@@ -78,7 +99,7 @@ def turn_forward():
     r = math.sqrt(pow(odom_xyt[0],2)+pow(odom_xyt[1],2))
     l = math.sqrt(pow(x_pose,2)+pow(y_pose,2))
     while(True):
-        #print(odom_xyt[0],l)
+        print(round(odom_xyt[0],3),l)
         if abs(odom_xyt[0])<=abs(l):
             x = 0.2
             z = 0
@@ -87,6 +108,7 @@ def turn_forward():
             x = 0
             z = 0
             move(x, z)
+            rospy.sleep(0.1)
             print("vse2")
             break
 
@@ -97,7 +119,6 @@ def move(x,z):
     pub_1_vel.angular.z = z
     pub_1.publish(pub_1_vel)
     rospy.sleep(0.05)
-
 def odom_cb(mes):
     global odom_xyt, odom_0_xyt
     odom_yaw = tf.transformations.euler_from_quaternion([
@@ -123,4 +144,5 @@ while not rospy.is_shutdown():
     if ta==2:
         turn_forward()
         ta+=1
+    exit()
     rospy.sleep(0.1)
