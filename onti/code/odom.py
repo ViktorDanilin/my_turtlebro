@@ -13,6 +13,7 @@ global x,z, x_pose, y_pose, angular
 odom_xyt = (0, 0, 0)
 odom_0_xyt = None
 ta = 1
+l = 0
 x_pose = float(raw_input("x: "))
 y_pose = float(raw_input("y: "))
 angular = 0.0
@@ -27,32 +28,32 @@ def turn_around():
         c = 1
         x_pose = abs(x_pose)
         y_pose = abs(y_pose)
-        angular = -1*((pi/2)-atan((x_pose/y_pose))/2)
+        angular = -1*((pi/2)-atan((x_pose/y_pose)))
     if x_pose < 0 and y_pose > 0:
         #2chetvert
         c = 2
         x_pose = abs(x_pose)
         y_pose = abs(y_pose)
-        angular = ((pi/2) - atan((x_pose / y_pose))/2)
+        angular = ((pi/2) - atan((x_pose / y_pose)))
     if x_pose < 0 and y_pose < 0:
         #3chetvert
         c = 3
         x_pose = abs(x_pose)
         y_pose = abs(y_pose)
-        angular = ((pi/2) + atan((x_pose / y_pose))/2)
+        angular = ((pi/2) + atan((x_pose / y_pose)))
     if x_pose > 0 and y_pose < 0:
         #4chetvert
         c = 4
         x_pose = abs(x_pose)
         y_pose = abs(y_pose)
-        angular = -1 * ((pi/2) + atan((x_pose / y_pose))/2)
+        angular = -1 * ((pi/2) + atan((x_pose / y_pose)))
 
     while(True):
         print(c, odom_xyt[2], angular)
         if c==1 or c==4:
             if odom_xyt[2]>angular:
                 x = 0
-                z = -0.1
+                z = -0.15
                 move(x, z)
             else:
                 time.sleep(1)
@@ -63,7 +64,7 @@ def turn_around():
         if c==2 or c==3:
             if odom_xyt[2]<angular:
                 x = 0
-                z = 0.1
+                z = 0.15
                 move(x, z)
             else:
                 x = 0
@@ -71,6 +72,24 @@ def turn_around():
                 move(x, z)
                 print("vse")
                 break
+
+def turn_forward():
+    global odom_xyt, odom_0_xyt, x_pose,y_pose, angular
+    r = math.sqrt(pow(odom_xyt[0],2)+pow(odom_xyt[1],2))
+    l = math.sqrt(pow(x_pose,2)+pow(y_pose,2))
+    while(True):
+        print(odom_xyt[0],l)
+        if abs(odom_xyt[0])<=abs(l):
+            x = 0.2
+            z = 0
+            move(x,z)
+        else:
+            x = 0
+            z = 0
+            move(x, z)
+            print("vse2")
+            break
+
 
 def move(x,z):
     pub_1_vel = Twist()
@@ -101,7 +120,7 @@ while not rospy.is_shutdown():
     if ta==1:
         turn_around()
         ta+=1
-    # if ta==2:
-    #     turn_forward()
-    #     ta+=1
+    if ta==2:
+        turn_forward()
+        ta+=1
     rospy.sleep(0.1)
