@@ -24,7 +24,7 @@ z = 0
 dist = 0
 button = False
 
-
+#zbs rabotaet
 def turn_around():
     global odom_xyt, odom_0_xyt, x_pose,y_pose, angular
     c = 0
@@ -108,13 +108,16 @@ def turn_around():
                 print("vse")
                 break
 
+#rabotaet no poka ne zaebis
 def turn_forward():
     global odom_xyt, odom_0_xyt, x_pose,y_pose, angular
-    r = math.sqrt(pow(odom_xyt[0],2)+pow(odom_xyt[1],2))
+    r = math.sqrt(pow(odom_xyt[0],2)+pow(odom_xyt[0],2))
     l = abs(math.sqrt(pow(x_pose,2)+pow(y_pose,2))+abs(odom_xyt[0]))
-    print(abs(odom_xyt[0]),abs(l))
-    while not rospy.is_shutdown() and(abs(odom_xyt[0])<=abs(l)):
-        #print(round(odom_xyt[0],3),l)
+    if odom_xyt[0]<0:
+        l = odom_xyt[0]+(abs(l)-abs(odom_xyt[0]))
+    #print(odom_xyt[0], l)
+    while not rospy.is_shutdown() and((odom_xyt[0])<=(l)):
+        print(round(odom_xyt[0],3),l)
         x = 0.2
         z = 0
         move(x, z)
@@ -158,7 +161,7 @@ def start():
         if button:
             time.sleep(7)
             if dist>50 or dist==0:
-                x = 0.3
+                x = 0.2
                 z = 0
                 move(x,z)
                 time.sleep(2)
