@@ -20,7 +20,7 @@ l = 0
 angular = 0.0
 x = 0
 z = 0
-
+# fix around!!!!
 def turn_around():
     global odom_xyt, odom_0_xyt, x_pose,y_pose, angular
     c = 0
@@ -103,7 +103,7 @@ def turn_around():
                 rospy.sleep(0.1)
                 print("vse")
                 break
-
+#zfebis
 def turn_forward():
     global odom_xyt, odom_0_xyt, x_pose,y_pose, angular, odom
     start_pose = odom
