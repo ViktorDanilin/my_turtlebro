@@ -10,7 +10,7 @@ from nav_msgs.msg import Odometry
 
 
 rospy.init_node('onti')
-pub_1 = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+pub_1 = rospy.Publisher("/cmd_vel", Twist, queue_size=5)
 global dist, button,x,z, x_pose, y_pose, angular
 odom_xyt = (0, 0, 0)
 odom_0_xyt = None
@@ -73,11 +73,14 @@ def turn_around():
     angular+=odom_xyt[2]
     ######!!!!!
     if abs(angular)>pi:
-        angular = pi
-    ######!!!!!
+        if c==1 or c==3:
+            c+=1
+        if c==2 or c==4:
+            c-=1
+        angular = pi-(abs(angular)-pi)
     print(odom_xyt[2],angular)
 
-    while(True):
+    while not rospy.is_shutdown():
         #print(odom_xyt[2], angular)
         if c==1 or c==4:
             if odom_xyt[2]>=angular:
@@ -109,27 +112,25 @@ def turn_forward():
     global odom_xyt, odom_0_xyt, x_pose,y_pose, angular
     r = math.sqrt(pow(odom_xyt[0],2)+pow(odom_xyt[1],2))
     l = abs(math.sqrt(pow(x_pose,2)+pow(y_pose,2))+abs(odom_xyt[0]))
-    print(odom_xyt[0],l)
-    while(True):
+    print(abs(odom_xyt[0]),abs(l))
+    while not rospy.is_shutdown() and(abs(odom_xyt[0])<=abs(l)):
         #print(round(odom_xyt[0],3),l)
-        if abs(odom_xyt[0])<=abs(l):
-            x = 0.2
-            z = 0
-            move(x,z)
-        else:
-            x = 0
-            z = 0
-            move(x, z)
-            rospy.sleep(0.1)
-            print("vse2")
-            break
+        x = 0.2
+        z = 0
+        move(x, z)
+        rospy.sleep(0.05)
+    x = 0
+    z = 0
+    move(x, z)
+    rospy.sleep(0.1)
+    print("vse2")
 
 def move(x,z):
     pub_1_vel = Twist()
     pub_1_vel.linear.x = x
     pub_1_vel.angular.z = z
     pub_1.publish(pub_1_vel)
-    rospy.sleep(0.05)
+    rospy.sleep(0.06)
 
 def range_cb(msg):
     global dist
