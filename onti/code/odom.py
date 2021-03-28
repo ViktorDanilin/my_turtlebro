@@ -9,7 +9,7 @@ from nav_msgs.msg import Odometry
 rospy.init_node('onti')
 pub_1 = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
 
-global x,z, x_pose, y_pose, angular, odom
+global x,z, x_pose, y_pose, angular, odom, a
 odom = Odometry()
 odom_xyt = (0, 0, 0)
 odom_0_xyt = None
@@ -138,6 +138,15 @@ def move(x,z):
     pub_1_vel.angular.z = z
     pub_1.publish(pub_1_vel)
     rospy.sleep(0.05)
+
+def fix_a(a):
+    if a < -math.pi:
+        return a + 2*math.pi
+    elif a > math.pi:
+        return a - 2*math.pi
+    else:
+        return a
+
 def odom_cb(mes):
     global odom_xyt, odom_0_xyt, odom
     odom = mes
@@ -145,7 +154,7 @@ def odom_cb(mes):
 mes.pose.pose.orientation.x, mes.pose.pose.orientation.y, mes.pose.pose.orientation.z, mes.pose.pose.orientation.w])[2]
     if odom_0_xyt is None:
         odom_0_xyt = (mes.pose.pose.position.x, mes.pose.pose.position.y, odom_yaw)
-    odom_xyt = (mes.pose.pose.position.x-odom_0_xyt[0], mes.pose.pose.position.y-odom_0_xyt[1], (odom_yaw-odom_0_xyt[2]))
+    odom_xyt = (mes.pose.pose.position.x-odom_0_xyt[0], mes.pose.pose.position.y-odom_0_xyt[1], fix_a(odom_yaw-odom_0_xyt[2]))
 
 
 sub = rospy.Subscriber('/odom', Odometry, odom_cb)
