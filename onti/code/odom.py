@@ -15,8 +15,6 @@ odom_xyt = (0, 0, 0)
 odom_0_xyt = None
 ta = 1
 l = 0
-# x_pose = float(raw_input("x: "))
-# y_pose = float(raw_input("y: "))
 angular = 0.0
 x = 0
 z = 0
@@ -71,9 +69,9 @@ def turn_around():
     if abs(angular)>pi:
         angular = pi-(abs(angular)-pi)
     if odom_xyt[2]>angular:
-        if c==1 or c==3:
+        if c==3:
             c+=1
-        if c==2 or c==4:
+        if c==2:
             c-=1
     print(odom_xyt[2],angular)
 
