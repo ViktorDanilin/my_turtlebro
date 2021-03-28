@@ -67,7 +67,7 @@ def turn_around():
     angular+=odom_xyt[2]
     ######!!!!!
     if abs(angular)>pi:
-        angular = pi-(abs(angular)-pi)
+        angular = pi-(angular-pi)
     if odom_xyt[2]>angular:
         if c==3:
             c+=1
