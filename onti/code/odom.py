@@ -69,11 +69,12 @@ def turn_around():
     angular+=odom_xyt[2]
     ######!!!!!
     if abs(angular)>pi:
+        angular = pi-(abs(angular)-pi)
+    if odom_xyt[2]>angular:
         if c==1 or c==3:
             c+=1
         if c==2 or c==4:
             c-=1
-        angular = pi-(abs(angular)-pi)
     print(odom_xyt[2],angular)
 
     while not rospy.is_shutdown():
