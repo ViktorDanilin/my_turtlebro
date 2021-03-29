@@ -28,14 +28,14 @@ def turn_around():
             angular = 0.0
         if y_pose<0:
             c = 3
-            angular = pi-0.01
+            angular = pi
     elif y_pose == 0:
         if x_pose>0:
             c = 1
-            angular = -1*(pi/2)
+            angular = (pi/2)
         if x_pose<0:
             c = 2
-            angular = (pi/2)
+            angular = -1*(pi/2)
         if x_pose==0:
             c = 1
             angular = 0.0
@@ -45,63 +45,37 @@ def turn_around():
             c = 1
             x_pose = abs(x_pose)
             y_pose = abs(y_pose)
-            angular = -1*((pi/2)-atan((y_pose/x_pose)))
+            angular = ((pi/2)-atan((y_pose/x_pose)))
         if x_pose < 0 and y_pose > 0:
             #2chetvert
             c = 2
             x_pose = abs(x_pose)
             y_pose = abs(y_pose)
-            angular = ((pi/2) - atan((y_pose / x_pose)))
+            angular = -1*((pi/2) - atan((y_pose / x_pose)))
         if x_pose < 0 and y_pose < 0:
             #3chetvert
             c = 3
             x_pose = abs(x_pose)
             y_pose = abs(y_pose)
-            angular = ((pi/2) + atan((y_pose / x_pose)))
+            angular = -1 * ((pi/2) + atan((y_pose / x_pose)))
         if x_pose > 0 and y_pose < 0:
             #4chetvert
             c = 4
             x_pose = abs(x_pose)
             y_pose = abs(y_pose)
-            angular = -1 * ((pi/2) + atan((y_pose / x_pose)))
-    angular+=odom_xyt[2]
-    ######!!!!!
-    if abs(angular)>pi:
-        angular = pi-(angular-pi)
-    if odom_xyt[2]>angular:
-        if c==3:
-            c+=1
-        if c==2:
-            c-=1
-    print(odom_xyt[2],angular)
-
-    while not rospy.is_shutdown():
-        #print(odom_xyt[2], angular)
-        if c==1 or c==4:
-            if odom_xyt[2]>=angular:
-                x = 0
-                z = -0.25
-                move(x, z)
-            else:
-                time.sleep(1)
-                x = 0
-                z = 0
-                move(x,z)
-                rospy.sleep(0.1)
-                print("vse")
-                break
-        if c==2 or c==3:
-            if odom_xyt[2]<=angular:
-                x = 0
-                z = 0.25
-                move(x, z)
-            else:
-                x = 0
-                z = 0
-                move(x, z)
-                rospy.sleep(0.1)
-                print("vse")
-                break
+            angular = ((pi/2) + atan((y_pose / x_pose)))
+    if angular>0:
+        t = angular / 0.2
+        print(t)
+        move(0,-0.2)
+        time.sleep(t+ 0.1*t)
+        move(0,0)
+    if angular<0:
+        t = angular / -0.2
+        print(t)
+        move(0, 0.2)
+        time.sleep(t+ 0.1*t)
+        move(0, 0)
 #zfebis
 def turn_forward():
     global odom_xyt, odom_0_xyt, x_pose,y_pose, angular, odom
@@ -117,7 +91,7 @@ def turn_forward():
     while not rospy.is_shutdown() and(distance<=(l)):
         distance = get_distance(start_pose.pose.pose.position, odom.pose.pose.position)
         print(distance,l)
-        x = 0.2
+        x = 0.18
         z = 0
         move(x, z)
         rospy.sleep(0.05)
@@ -137,7 +111,6 @@ def move(x,z):
     pub_1_vel.linear.x = x
     pub_1_vel.angular.z = z
     pub_1.publish(pub_1_vel)
-    rospy.sleep(0.05)
 
 def fix_a(a):
     if a < -math.pi:
