@@ -11,7 +11,8 @@ from nav_msgs.msg import Odometry
 
 rospy.init_node('onti')
 pub_1 = rospy.Publisher("/cmd_vel", Twist, queue_size=5)
-global dist, button,x,z, x_pose, y_pose, angular
+global dist, button,x,z, x_pose, y_pose, angular, odom, a
+odom = Odometry()
 odom_xyt = (0, 0, 0)
 odom_0_xyt = None
 # x_pose = float(raw_input())
@@ -31,94 +32,74 @@ def turn_around():
     if x_pose == 0:
         if y_pose>=0:
             c = 1
-            angular = 0
+            angular = 0.0
         if y_pose<0:
             c = 3
-            angular = pi-0.01
+            angular = pi
     elif y_pose == 0:
         if x_pose>0:
             c = 1
-            angular = -1*(pi/2)
+            angular = (pi/2)
         if x_pose<0:
             c = 2
-            angular = (pi/2)
+            angular = -1*(pi/2)
         if x_pose==0:
             c = 1
-            angular = 0
+            angular = 0.0
     else:
         if x_pose>0 and y_pose>0:
             #1chetvert
             c = 1
             x_pose = abs(x_pose)
             y_pose = abs(y_pose)
-            angular = -1*((pi/2)-atan((y_pose/x_pose)))
+            angular = ((pi/2)-atan((y_pose/x_pose)))
         if x_pose < 0 and y_pose > 0:
             #2chetvert
             c = 2
             x_pose = abs(x_pose)
             y_pose = abs(y_pose)
-            angular = ((pi/2) - atan((y_pose / x_pose)))
+            angular = -1*((pi/2) - atan((y_pose / x_pose)))
         if x_pose < 0 and y_pose < 0:
             #3chetvert
             c = 3
             x_pose = abs(x_pose)
             y_pose = abs(y_pose)
-            angular = ((pi/2) + atan((y_pose / x_pose)))
+            angular = -1 * ((pi/2) + atan((y_pose / x_pose)))
         if x_pose > 0 and y_pose < 0:
             #4chetvert
             c = 4
             x_pose = abs(x_pose)
             y_pose = abs(y_pose)
-            angular = -1 * ((pi/2) + atan((y_pose / x_pose)))
-    angular+=odom_xyt[2]
-    ######!!!!!
-    if abs(angular)>pi:
-        if c==1 or c==3:
-            c+=1
-        if c==2 or c==4:
-            c-=1
-        angular = pi-(abs(angular)-pi)
-    print(odom_xyt[2],angular)
+            angular = ((pi/2) + atan((y_pose / x_pose)))
+    if angular>0:
+        t = angular / 0.2
+        print(t)
+        move(0,-0.2)
+        time.sleep(t+ 0.1*t)
+        move(0,0)
+    if angular<0:
+        t = angular / -0.2
+        print(t)
+        move(0, 0.2)
+        time.sleep(t+ 0.1*t)
+        move(0, 0)
 
-    while not rospy.is_shutdown():
-        #print(odom_xyt[2], angular)
-        if c==1 or c==4:
-            if odom_xyt[2]>=angular:
-                x = 0
-                z = -0.15
-                move(x, z)
-            else:
-                time.sleep(1)
-                x = 0
-                z = 0
-                move(x,z)
-                rospy.sleep(0.1)
-                print("vse")
-                break
-        if c==2 or c==3:
-            if odom_xyt[2]<=angular:
-                x = 0
-                z = 0.15
-                move(x, z)
-            else:
-                x = 0
-                z = 0
-                move(x, z)
-                rospy.sleep(0.1)
-                print("vse")
-                break
-
-#rabotaet no poka ne zaebis
+#zbs
 def turn_forward():
-    global odom_xyt, odom_0_xyt, x_pose,y_pose, angular
+    global odom_xyt, odom_0_xyt, x_pose,y_pose, angular, odom
+    start_pose = odom
+
     r = math.sqrt(pow(odom_xyt[0],2)+pow(odom_xyt[0],2))
-    l = abs(math.sqrt(pow(x_pose,2)+pow(y_pose,2))+abs(odom_xyt[0]))
+    l = abs(math.sqrt(pow(x_pose,2)+pow(y_pose,2)))
+    v = 0
     if odom_xyt[0]<0:
-        l = odom_xyt[0]+(abs(l)-abs(odom_xyt[0]))
+        v = 1
     #print(odom_xyt[0], l)
-    while not rospy.is_shutdown() and((odom_xyt[0])<=(l)):
-        print(round(odom_xyt[0],3),l)
-        x = 0.2
+    distance = get_distance(start_pose.pose.pose.position, odom.pose.pose.position)
+    while not rospy.is_shutdown() and(distance<=(l)):
+        distance = get_distance(start_pose.pose.pose.position, odom.pose.pose.position)
+        print(distance,l)
+        x = 0.18
         z = 0
         move(x, z)
         rospy.sleep(0.05)
@@ -128,12 +109,22 @@ def turn_forward():
     rospy.sleep(0.1)
     print("vse2")
 
+def get_distance(start_pose, current_pose):
+    return math.sqrt(math.pow(start_pose.x - current_pose.x, 2) + math.pow(start_pose.y - current_pose.y, 2))
+
 def move(x,z):
     pub_1_vel = Twist()
     pub_1_vel.linear.x = x
     pub_1_vel.angular.z = z
     pub_1.publish(pub_1_vel)
-    rospy.sleep(0.06)
+
+def fix_a(a):
+    if a < -math.pi:
+        return a + 2*math.pi
+    elif a > math.pi:
+        return a - 2*math.pi
+    else:
+        return a
 
 def range_cb(msg):
     global dist
@@ -144,12 +135,13 @@ def start_cb(msg):
     button = msg.data
 
 def odom_cb(mes):
-    global odom_xyt, odom_0_xyt, odom_updated
+    global odom_xyt, odom_0_xyt, odom
+    odom = mes
     odom_yaw = tf.transformations.euler_from_quaternion([
 mes.pose.pose.orientation.x, mes.pose.pose.orientation.y, mes.pose.pose.orientation.z, mes.pose.pose.orientation.w])[2]
     if odom_0_xyt is None:
         odom_0_xyt = (mes.pose.pose.position.x, mes.pose.pose.position.y, odom_yaw)
-    odom_xyt = (mes.pose.pose.position.x-odom_0_xyt[0], mes.pose.pose.position.y-odom_0_xyt[1], (odom_yaw-odom_0_xyt[2]))
+    odom_xyt = (mes.pose.pose.position.x-odom_0_xyt[0], mes.pose.pose.position.y-odom_0_xyt[1], fix_a(odom_yaw-odom_0_xyt[2]))
 
 
 sub_1 = rospy.Subscriber('/ultrasound', Range, range_cb)
