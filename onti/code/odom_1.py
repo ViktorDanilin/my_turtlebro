@@ -68,6 +68,9 @@ def turn_around():
             angular = -1 * ((pi/2) + atan((y_pose / x_pose)))
     angular+=odom_xyt[2]
     ######!!!!!
+    if abs(angular)>pi:
+        angular = pi-(abs(angular)-pi)
+
     if odom_xyt[2]>angular:
         if c==3:
             c+=1
@@ -75,16 +78,13 @@ def turn_around():
             c-=1
     print(odom_xyt[2],angular)
 
-
+    prev_angle = 0
     while not rospy.is_shutdown():
-        if odom_xyt[2]>(pi+angular):
-            while not rospy.is_shutdown():
-                move(0,-0.2)
-            move(0,0)
-
+        angle = odom_xyt[2]-prev_angle
+        prev_angle = odom_xyt[2]
         #print(odom_xyt[2], angular)
         if c==1 or c==4:
-            if odom_xyt[2]>=angular:
+            if angle>=angular:
                 x = 0
                 z = -0.25
                 move(x, z)
@@ -97,7 +97,7 @@ def turn_around():
                 print("vse")
                 break
         if c==2 or c==3:
-            if odom_xyt[2]<=angular:
+            if angle<=angular:
                 x = 0
                 z = 0.25
                 move(x, z)

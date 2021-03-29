@@ -1,7 +1,7 @@
 # connection 
 * hostname ip : 192.168.19.140
 * turtlebro ip : 192.169.19.192
-* connect to turtlebro : ssh pi@turtlebro73.local
+* connect to turtlebro : ssh pi@turtlebroXX.local
 * pwd: brobro
 * wifi connect sudo mcedit /etc/wpa_supplicant/wpa_supplicant.conf
 # redaction ~/.bashrc

@@ -80,7 +80,7 @@ def turn_around():
         if c==1 or c==4:
             if odom_xyt[2]>=angular:
                 x = 0
-                z = -0.15
+                z = -0.25
                 move(x, z)
             else:
                 time.sleep(1)
@@ -93,7 +93,7 @@ def turn_around():
         if c==2 or c==3:
             if odom_xyt[2]<=angular:
                 x = 0
-                z = 0.15
+                z = 0.25
                 move(x, z)
             else:
                 x = 0
