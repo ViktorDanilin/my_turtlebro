@@ -65,16 +65,16 @@ def turn_around():
             y_pose = abs(y_pose)
             angular = ((pi/2) + atan((y_pose / x_pose)))
     if angular>0:
-        t = angular / 0.2
+        t = angular / 0.4
         print(t)
-        move(0,-0.2)
-        time.sleep(t+ 0.1*t)
+        move(0,-0.4)
+        time.sleep(t)
         move(0,0)
     if angular<0:
-        t = angular / -0.2
+        t = angular / -0.4
         print(t)
-        move(0, 0.2)
-        time.sleep(t+ 0.1*t)
+        move(0, 0.4)
+        time.sleep(t)
         move(0, 0)
 #zfebis
 def turn_forward():
