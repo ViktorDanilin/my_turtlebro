@@ -68,13 +68,13 @@ def turn_around():
         t = angular / 0.4
         print(t)
         move(0,-0.4)
-        time.sleep(t)
+        time.sleep(t+t*0.01)
         move(0,0)
     if angular<0:
         t = angular / -0.4
         print(t)
         move(0, 0.4)
-        time.sleep(t)
+        time.sleep(t+t*0.01)
         move(0, 0)
 #zfebis
 def turn_forward():
