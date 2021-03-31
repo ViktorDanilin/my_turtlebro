@@ -19,3 +19,4 @@
 * or cofig .launch slam-navigation(false) to (true)
 * next -> run rviz on your laptop
 * open robot.rviz from rviz directory
+ 
