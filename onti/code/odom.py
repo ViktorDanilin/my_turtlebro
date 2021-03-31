@@ -1,4 +1,6 @@
 import rospy
+import serial
+import binascii
 import math
 import time
 from math import atan, pi
@@ -8,8 +10,13 @@ from nav_msgs.msg import Odometry
 
 rospy.init_node('onti')
 pub_1 = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+ser = serial.Serial('/dev/ttyUSB0', 19200)
+print('init')
 
-global x,z, x_pose, y_pose, angular, odom, a
+global x,z, x_pose, y_pose, angular, odom, a,m,dat
+out = 0
+m = []
+dat = []
 odom = Odometry()
 odom_xyt = (0, 0, 0)
 odom_0_xyt = None
@@ -132,17 +139,50 @@ mes.pose.pose.orientation.x, mes.pose.pose.orientation.y, mes.pose.pose.orientat
 
 sub = rospy.Subscriber('/odom', Odometry, odom_cb)
 
+def str2hex(s):
+    return binascii.hexlify(bytes(str.encode(s)))
+
+def reader(out,m):
+    inp = ser.read()
+    v = str2hex(inp)
+    m.append(int(v))
+    inp = ser.read()
+    v = str2hex(inp)
+    m.append(int(v))
+    inp = ser.read()
+    v = str2hex(inp)
+    m.append(int(v))
+    return m
 
 def main():
     global odom_xyt, odom_0_xyt
 
     # turn_forward()
 
+count = 0
 while not rospy.is_shutdown():
 
     while not rospy.is_shutdown():
-        x_pose = float(raw_input("x: "))
-        y_pose = float(raw_input("y: "))
+        # x_pose = float(raw_input("x: "))
+        # y_pose = float(raw_input("y: "))
+        print("wait")
+        m = reader(out, m)
+        if len(m) == 3:
+            dat.append(m)
+            m = []
+        x_pose = float(dat[count][1])/float(10)
+        y_pose = float(dat[count][2])/float(10)
+        print(dat[count][1], dat[count][2])
+        d = dat[count][0]
+        if d==1:
+            pass
+        elif d==2:
+            x_pose = x_pose * -1
+        elif d==3:
+            x_pose = x_pose * -1
+            y_pose = y_pose * -1
+        else:
+            y_pose = y_pose * -1
         print(ta)
         if ta % 2 == 1:
             turn_around()
@@ -151,4 +191,5 @@ while not rospy.is_shutdown():
             turn_forward()
             ta += 1
             rospy.sleep(0.1)
+        count += 1
     rospy.sleep(0.1)
