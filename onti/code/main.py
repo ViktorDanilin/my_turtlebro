@@ -287,6 +287,7 @@ while not rospy.is_shutdown():
             servo_num = dat[count+1][0]
             pose = str(dat[count+1][1])+str(dat[count+1][2])
             pose = int(pose)
+            print(pose, "angle")
             state = dat[count+2][0]
             camera_state = dat[count+2][1]
             d = dat[count][0]
@@ -313,6 +314,9 @@ while not rospy.is_shutdown():
                 servo1(pose)
             if servo_num==2:
                 servo2(pose)
+            if servo_num==3:
+                servo3(pose)
+                servo4(-1*pose)
             if camera_state==1:
                 camera()
             m = []
