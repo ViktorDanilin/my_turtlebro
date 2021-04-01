@@ -10,15 +10,15 @@ from sensor_msgs.msg import Range
 from std_msgs.msg import Bool
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
-from std_msgs.msg import Uint16
-from std_msgs.msg import Uint32
+from std_msgs.msg import UInt16
+from std_msgs.msg import UInt32
 
 
 rospy.init_node('onti')
 pub_1 = rospy.Publisher("/cmd_vel", Twist, queue_size=5)
-pub_2 = rospy.Publisher("/servo_1",Uint16,queue_size=5)
-pub_3 = rospy.Publisher("/servo_2",Uint16,queue_size=5)
-pub_4 = rospy.Publisher("/slider",Uint32,queue_size=5)
+pub_2 = rospy.Publisher("/servo_1",UInt16,queue_size=5)
+pub_3 = rospy.Publisher("/servo_2",UInt16,queue_size=5)
+pub_4 = rospy.Publisher("/slider",UInt32,queue_size=5)
 
 ser = serial.Serial('/dev/ttyUSB1', 19200)
 print('init')
@@ -138,17 +138,17 @@ def move(x,z):
     pub_1.publish(pub_1_vel)
 
 def servo1(pose):
-    pub_2_d = Uint16()
+    pub_2_d = UInt16()
     pub_2_d.data = pose
     pub_2.publish(pub_2_d)
 
 def servo2(pose):
-    pub_3_d = Uint16()
+    pub_3_d = UInt16()
     pub_3_d.data = pose
     pub_3.publish(pub_3_d)
 
 def slider(state):
-    pub_4_d = Uint32()
+    pub_4_d = UInt32()
     pub_4_d.data = state
     pub_4.publish(pub_4_d)
 
@@ -229,7 +229,7 @@ def start():
                 x = 0.2
                 z = 0
                 move(x,z)
-                time.sleep(2)
+                time.sleep(6)
                 x = 0
                 z = 0
                 move(x, z)
@@ -262,7 +262,8 @@ while not rospy.is_shutdown():
             x_pose = float(dat[count][1]) / float(10)
             y_pose = float(dat[count][2]) / float(10)
             servo_num = dat[count+1][0]
-            pose = dat[count+1][1]+dat[count+1][2]
+            pose = str(dat[count+1][1])+str(dat[count+1][2])
+            pose = int(pose)
             state = dat[count+2][0]
             camera_state = dat[count+2][1]
             d = dat[count][0]
@@ -291,5 +292,5 @@ while not rospy.is_shutdown():
                 servo2(pose)
             if camera_state==1:
                 camera()
-            count += 3
+            dat = []
     rospy.sleep(0.1)

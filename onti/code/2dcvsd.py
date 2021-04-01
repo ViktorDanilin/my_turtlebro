@@ -1,6 +1,6 @@
 import struct
 import binascii
-inp = '\x01'
+inp = '\x79'
 
 def str2hex(s):
     return binascii.hexlify(bytes(str.encode(s)))
