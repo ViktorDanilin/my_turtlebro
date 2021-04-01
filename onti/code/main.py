@@ -9,14 +9,23 @@ from sensor_msgs.msg import Range
 from std_msgs.msg import Bool
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
+from std_msgs.msg import Uint16
+from std_msgs.msg import Uint32
 
 
 rospy.init_node('onti')
 pub_1 = rospy.Publisher("/cmd_vel", Twist, queue_size=5)
+pub_2 = rospy.Publisher("/servo_1",Uint16,queue_size=5)
+pub_3 = rospy.Publisher("/servo_2",Uint16,queue_size=5)
+pub_4 = rospy.Publisher("/slider",Uint32,queue_size=5)
+
 ser = serial.Serial('/dev/ttyUSB0', 19200)
 print('init')
 
-global dist, button,x,z, x_pose, y_pose, angular, odom, a,m,dat
+global dist, button,x,z, x_pose, y_pose, angular, odom, a,m,dat,pose,state,camera_state
+camera_state = 0
+pose = 0
+state = 0
 out = 0
 m = []
 dat = []
@@ -127,6 +136,21 @@ def move(x,z):
     pub_1_vel.angular.z = z
     pub_1.publish(pub_1_vel)
 
+def servo1(pose):
+    pub_2_d = Uint16()
+    pub_2_d.data = pose
+    pub_2.publish(pub_2_d)
+
+def servo2(pose):
+    pub_3_d = Uint16()
+    pub_3_d.data = pose
+    pub_3.publish(pub_3_d)
+
+def slider(state):
+    pub_4_d = Uint32()
+    pub_4_d.data = state
+    pub_4.publish(pub_4_d)
+
 def fix_a(a):
     if a < -math.pi:
         return a + 2*math.pi
@@ -206,7 +230,10 @@ while not rospy.is_shutdown():
                 m = []
             x_pose = float(dat[count][1]) / float(10)
             y_pose = float(dat[count][2]) / float(10)
-            print(dat[count][1], dat[count][2])
+            servo_num = dat[count+1][0]
+            pose = dat[count+1][1]+dat[count+1][2]
+            state = dat[count+2][0]
+            camera_state = dat[count+2][1]
             d = dat[count][0]
             if d == 1:
                 pass
@@ -225,4 +252,5 @@ while not rospy.is_shutdown():
                 turn_forward()
                 ta += 1
                 rospy.sleep(0.1)
+            count += 3
     rospy.sleep(0.1)
