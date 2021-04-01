@@ -241,10 +241,6 @@ def camera():
 
 def start():
     global dist, button, x, z
-    servo1(170)
-    servo2(130)
-    servo3(0)
-    servo4(0)
     while(True):
         if button:
             time.sleep(7)
@@ -308,8 +304,6 @@ while not rospy.is_shutdown():
                 turn_forward()
                 ta += 1
                 rospy.sleep(0.1)
-            if state==1:
-                slider(state)
             if servo_num==1:
                 servo1(pose)
             if servo_num==2:
@@ -320,6 +314,10 @@ while not rospy.is_shutdown():
             if servo_num==4:
                 servo3(90)
                 servo4(130)
+            if state==1:
+                slider(1)
+            else:
+                slider(0)
             if camera_state==1:
                 camera()
             m = []
