@@ -251,6 +251,14 @@ while not rospy.is_shutdown():
             if len(m) == 3:
                 dat.append(m)
                 m = []
+            m = reader(out, m)
+            if len(m) == 3:
+                dat.append(m)
+                m = []
+            m = reader(out, m)
+            if len(m) == 3:
+                dat.append(m)
+                m = []
             x_pose = float(dat[count][1]) / float(10)
             y_pose = float(dat[count][2]) / float(10)
             servo_num = dat[count+1][0]
