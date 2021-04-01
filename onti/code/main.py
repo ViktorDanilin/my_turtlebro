@@ -315,8 +315,11 @@ while not rospy.is_shutdown():
             if servo_num==2:
                 servo2(pose)
             if servo_num==3:
-                servo3(pose)
-                servo4(-1*pose)
+                servo3(0)
+                servo4(180)
+            if servo_num==4:
+                servo3(90)
+                servo4(130)
             if camera_state==1:
                 camera()
             m = []
