@@ -18,6 +18,8 @@ rospy.init_node('onti')
 pub_1 = rospy.Publisher("/cmd_vel", Twist, queue_size=5)
 pub_2 = rospy.Publisher("/servo_1",UInt16,queue_size=5)
 pub_3 = rospy.Publisher("/servo_2",UInt16,queue_size=5)
+pub_3 = rospy.Publisher("/servo_3",UInt16,queue_size=5)
+pub_3 = rospy.Publisher("/servo_4",UInt16,queue_size=5)
 pub_4 = rospy.Publisher("/slider",UInt32,queue_size=5)
 
 ser = serial.Serial('/dev/ttyUSB1', 19200)
@@ -151,6 +153,18 @@ def slider(state):
     pub_4_d = UInt32()
     pub_4_d.data = state
     pub_4.publish(pub_4_d)
+
+def servo3(pose):
+    pub_5_d = UInt16()
+    pub_5_d.data = pose
+    pub_5.publish(pub_5_d)
+
+def servo4(pose):
+    pub_6_d = UInt16()
+    pub_6_d.data = pose
+    pub_6.publish(pub_6_d)
+
+
 
 def fix_a(a):
     if a < -math.pi:
@@ -292,5 +306,6 @@ while not rospy.is_shutdown():
                 servo2(pose)
             if camera_state==1:
                 camera()
+            m = []
             dat = []
     rospy.sleep(0.1)
