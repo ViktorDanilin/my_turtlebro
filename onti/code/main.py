@@ -241,7 +241,7 @@ def camera():
 
 def start():
     global dist, button, x, z
-    while(True):
+    while not rospy.is_shutdown():
         if button:
             time.sleep(7)
             if dist>50 or dist==0:
@@ -252,6 +252,8 @@ def start():
                 x = 0
                 z = 0
                 move(x, z)
+                servo3(0)
+                servo4(180)
                 break
 def main():
     global odom_xyt, odom_0_xyt
@@ -312,8 +314,8 @@ while not rospy.is_shutdown():
                 servo3(0)
                 servo4(180)
             if servo_num==4:
-                servo3(90)
-                servo4(130)
+                servo3(80)
+                servo4(140)
             if state==1:
                 slider(1)
             else:
