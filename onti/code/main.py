@@ -18,8 +18,8 @@ rospy.init_node('onti')
 pub_1 = rospy.Publisher("/cmd_vel", Twist, queue_size=5)
 pub_2 = rospy.Publisher("/servo_1",UInt16,queue_size=5)
 pub_3 = rospy.Publisher("/servo_2",UInt16,queue_size=5)
-pub_3 = rospy.Publisher("/servo_3",UInt16,queue_size=5)
-pub_3 = rospy.Publisher("/servo_4",UInt16,queue_size=5)
+pub_5 = rospy.Publisher("/servo_3",UInt16,queue_size=5)
+pub_6 = rospy.Publisher("/servo_4",UInt16,queue_size=5)
 pub_4 = rospy.Publisher("/slider",UInt32,queue_size=5)
 
 ser = serial.Serial('/dev/ttyUSB1', 19200)
@@ -143,26 +143,31 @@ def servo1(pose):
     pub_2_d = UInt16()
     pub_2_d.data = pose
     pub_2.publish(pub_2_d)
+    rospy.sleep(0.01)
 
 def servo2(pose):
     pub_3_d = UInt16()
     pub_3_d.data = pose
     pub_3.publish(pub_3_d)
+    rospy.sleep(0.01)
 
 def slider(state):
     pub_4_d = UInt32()
     pub_4_d.data = state
     pub_4.publish(pub_4_d)
+    rospy.sleep(0.01)
 
 def servo3(pose):
     pub_5_d = UInt16()
     pub_5_d.data = pose
     pub_5.publish(pub_5_d)
+    rospy.sleep(0.01)
 
 def servo4(pose):
     pub_6_d = UInt16()
     pub_6_d.data = pose
     pub_6.publish(pub_6_d)
+    rospy.sleep(0.01)
 
 
 
@@ -236,6 +241,10 @@ def camera():
 
 def start():
     global dist, button, x, z
+    servo1(170)
+    servo2(130)
+    servo3(0)
+    servo4(0)
     while(True):
         if button:
             time.sleep(7)
