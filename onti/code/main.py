@@ -275,6 +275,12 @@ while not rospy.is_shutdown():
                 turn_forward()
                 ta += 1
                 rospy.sleep(0.1)
+            if state==1:
+                slider(state)
+            if servo_num==1:
+                servo1(pose)
+            if servo_num==2:
+                servo2(pose)
             if camera_state==1:
                 camera()
             count += 3
