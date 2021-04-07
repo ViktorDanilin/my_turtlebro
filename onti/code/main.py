@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import rospy
 import cv2
 import time
@@ -96,13 +98,13 @@ def turn_around():
         t = angular / 0.25
         print(t)
         move(0,-0.25)
-        time.sleep(t+ 0.1*t)
+        time.sleep(t)
         move(0,0)
     if angular<0:
         t = angular / -0.25
         print(t)
         move(0, 0.25)
-        time.sleep(t+ 0.1*t)
+        time.sleep(t)
         move(0, 0)
 
 #zbs
@@ -220,13 +222,17 @@ def reader(out,m):
 def camera():
     cap = cv2.VideoCapture(2)
     print('OK')
-    print(cap.isOpened())
     for i in range(20):
         ret, frame = cap.read()
     cap.release()
     gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    print(gray_image)
-    cv2.imwrite('test.jpg', gray_image)
+    scale_percent = 20
+    width = int(gray_image.shape[1] * scale_percent / 100)
+    height = int(gray_image.shape[0] * scale_percent / 100)
+    dim = (width, height)
+    resized = cv2.resize(gray_image, dim, interpolation=cv2.INTER_AREA)
+    print(resized)
+    cv2.imwrite('test.jpg', resized)
     with open('test.jpg', 'rb') as file:
         img = file.read()
         pack_size = 1024
@@ -234,7 +240,6 @@ def camera():
         for i in range(0, pack_num):
             serial_pack = img[i * pack_size:(i + 1) * pack_size]
             send_bytes = ser.write(serial_pack)
-            print(send_bytes)
             time.sleep(0.5)
         time.sleep(4)
         ser.write('S')
@@ -283,8 +288,7 @@ while not rospy.is_shutdown():
             x_pose = float(dat[count][1]) / float(10)
             y_pose = float(dat[count][2]) / float(10)
             servo_num = dat[count+1][0]
-            pose = str(dat[count+1][1])+str(dat[count+1][2])
-            pose = int(pose)
+            pose = (dat[count+1][1])+(dat[count+1][2])
             print(pose, "angle")
             state = dat[count+2][0]
             camera_state = dat[count+2][1]
